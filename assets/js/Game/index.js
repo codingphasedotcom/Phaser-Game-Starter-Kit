@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import { Game } from 'phaser';
 import Level1 from './scenes/Level1.js';
 
 var config = {
@@ -17,4 +17,4 @@ var config = {
 	scene: [Level1]
 };
 
-var game = new Phaser.Game(config);
+var game = new Game(config);
