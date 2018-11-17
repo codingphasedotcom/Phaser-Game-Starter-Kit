@@ -14,6 +14,14 @@ export default class Level1 extends Scene {
 			frameWidth: 32,
 			frameHeight: 48
 		});
+		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
+
+		// this.preloadBar = this.add.sprite(
+		// 	this.game.world.centerX,
+		// 	this.game.world.centerY + 128,
+		// 	'preloadBar'
+		// );
+		// this.preloadBar.anchor.setTo(0.5);
 	}
 	create() {
 		this.add.image(400, 300, 'sky');
@@ -82,7 +90,13 @@ export default class Level1 extends Scene {
 		});
 		this.physics.add.collider(this.stars, this.platforms);
 		this.physics.add.overlap(this.player, this.stars, collectStar, null, this);
+		this.score = 0;
+
 		function collectStar(player, star) {
+			var coin_sound = this.sound.add('coin_sound');
+			coin_sound.play();
+			this.score += 1;
+			console.log(this.score);
 			star.disableBody(true, true);
 		}
 	}
