@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import Player from './player.js';
 export default class Level1 extends Scene {
 	constructor() {
 		super({
@@ -6,10 +7,10 @@ export default class Level1 extends Scene {
 		});
 	}
 	preload() {
-		this.load.image('tiles', '/assets/img/arcade_platformerV2.png');
-		this.load.tilemapTiledJSON('map', '/assets/img/tilegame.json');
-		/////////////////////
-		// this.load.image('sky', '/assets/img/skypixel.jpg');
+		// load tiles
+		this.load.image('tiles', '/assets/img/arcade_platformerV2-transparent.png');
+		this.load.tilemapTiledJSON('map', '/assets/img/platformTiled.json');
+		// images
 		this.load.image('ground', '/assets/img/platform.png');
 		this.load.image('star', '/assets/img/star.png');
 		this.load.image('bomb', '/assets/img/bomb.png');
@@ -17,89 +18,64 @@ export default class Level1 extends Scene {
 			frameWidth: 32,
 			frameHeight: 48
 		});
-		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
+		// audio
+		this.load.audio('coin_sound', ['assets/audio/sfx_sounds_pause4_in.wav']);
+		this.load.audio('bgmusic1', ['assets/audio/Trevor_Lentz.mp3']);
 	}
 	create() {
+		//make tilemap
 		const map = this.make.tilemap({
 			key: 'map',
 			tileWidth: 16,
 			tileHeight: 16
 		});
-		// const tileset = map.addTilesetImage('maptiles', 'tiles');
+		// Declare tileset
+		const tileset = map.addTilesetImage('arcade_platformerV2', 'tiles');
+		const backgroundLayer = map.createStaticLayer('background', tileset, 0, 0);
+		const treesLayer = map.createDynamicLayer('trees', tileset, 0, 0);
+		const worldLayer = map.createDynamicLayer('Terrain', tileset, 0, 0);
+		worldLayer.setCollisionByProperty({ collides: true });
+		//set camera bound to level
+		this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-		// const backgroundLayer = map.createStaticLayer('background', tileset, 0, 0);
-		// const worldLayer = map.createStaticLayer('platforms', tileset, 0, 0);
+		// DEBUG COlliders
+		// const debugGraphics = this.add.graphics().setAlpha(0.75);
+		// worldLayer.renderDebug(debugGraphics, {
+		// 	tileColor: null, // Color of non-colliding tiles
+		// 	collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+		// 	faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+		// });
+		this.physics.world.bounds.width = backgroundLayer.width;
+		this.physics.world.bounds.height = backgroundLayer.height;
 
+		var bgmusic1 = this.sound.add('bgmusic1');
+		// bgmusic1.play();
 		//////////
-
-		this.add.image(0, 0, 'sky');
-		this.platforms = this.physics.add.staticGroup();
-		this.platforms
-			.create(0, 0, 'ground')
-			.setOrigin(0, 0)
-			.setScale(1)
-			.refreshBody();
-		this.platforms
-			.create(300, 200, 'ground')
-			.setOrigin(0, 0)
-			.setScale(1)
-			.refreshBody();
-		this.platforms
-			.create(500, 100, 'ground')
-			.setOrigin(0, 0)
-			.refreshBody();
-		this.platforms
-			.create(0, 340, 'ground')
-			.setOrigin(0, 0)
-			.setScale(2)
-			.refreshBody();
-		this.player = this.physics.add.sprite(100, 150, 'dude');
-
-		this.player.setBounce(0.2);
-		this.player.setCollideWorldBounds(true);
-
-		this.anims.create({
-			key: 'left',
-			frames: this.anims.generateFrameNumbers('dude', {
-				start: 0,
-				end: 3
-			}),
-			frameRate: 10,
-			repeat: -1
-		});
-
-		this.anims.create({
-			key: 'turn',
-			frames: [{ key: 'dude', frame: 4 }],
-			frameRate: 20
-		});
-
-		this.anims.create({
-			key: 'right',
-			frames: this.anims.generateFrameNumbers('dude', {
-				start: 5,
-				end: 8
-			}),
-			frameRate: 10,
-			repeat: -1
-		});
-		this.player.body.setGravityY(300);
-		this.physics.add.collider(this.player, this.platforms);
+		this.player = new Player(this, 200, 0);
+		this.physics.add.collider(this.player.sprite, worldLayer);
+		this.cameras.main.startFollow(this.player.sprite);
 
 		// stars
 		this.stars = this.physics.add.group({
 			key: 'star',
-			repeat: 11,
-			setXY: { x: 12, y: 0, stepX: 70 }
+			repeat: 20,
+			setXY: { x: 20, y: 0, stepX: 100 }
 		});
 
 		this.stars.children.iterate(function(child) {
 			child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 		});
-		this.physics.add.collider(this.stars, this.platforms);
-		this.physics.add.overlap(this.player, this.stars, collectStar, null, this);
-		this.score = 0;
+		this.physics.add.collider(this.stars, worldLayer);
 
+		this.physics.add.overlap(
+			this.player.sprite,
+			this.stars,
+			collectStar,
+			null,
+			this
+		);
+		this.score = 0;
+		this.cameras.main.setZoom(1.5);
 		function collectStar(player, star) {
 			var coin_sound = this.sound.add('coin_sound');
 			coin_sound.play();
@@ -109,23 +85,6 @@ export default class Level1 extends Scene {
 		}
 	}
 	update(time, delta) {
-		// console.log(time);
-		this.cursors = this.input.keyboard.createCursorKeys();
-		if (this.cursors.left.isDown) {
-			this.player.setVelocityX(-160);
-
-			this.player.anims.play('left', true);
-		} else if (this.cursors.right.isDown) {
-			this.player.setVelocityX(160);
-
-			this.player.anims.play('right', true);
-		} else {
-			this.player.setVelocityX(0);
-
-			this.player.anims.play('turn');
-		}
-		if (this.cursors.up.isDown && this.player.body.touching.down) {
-			this.player.setVelocityY(-500);
-		}
+		this.player.update();
 	}
 }
