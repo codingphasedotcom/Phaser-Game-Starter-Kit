@@ -6,7 +6,7 @@ export default class Level1 extends Scene {
 		});
 	}
 	preload() {
-		this.load.image('sky', '/assets/img/sky.png');
+		this.load.image('sky', '/assets/img/skypixel.jpg');
 		this.load.image('ground', '/assets/img/platform.png');
 		this.load.image('star', '/assets/img/star.png');
 		this.load.image('bomb', '/assets/img/bomb.png');
@@ -15,16 +15,9 @@ export default class Level1 extends Scene {
 			frameHeight: 48
 		});
 		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
-
-		// this.preloadBar = this.add.sprite(
-		// 	this.game.world.centerX,
-		// 	this.game.world.centerY + 128,
-		// 	'preloadBar'
-		// );
-		// this.preloadBar.anchor.setTo(0.5);
 	}
 	create() {
-		this.add.image(400, 300, 'sky');
+		this.add.image(0, 0, 'sky');
 		this.platforms = this.physics.add.staticGroup();
 		this.platforms
 			.create(0, 0, 'ground')
@@ -100,7 +93,8 @@ export default class Level1 extends Scene {
 			star.disableBody(true, true);
 		}
 	}
-	update(delta) {
+	update(time, delta) {
+		console.log(time);
 		this.cursors = this.input.keyboard.createCursorKeys();
 		if (this.cursors.left.isDown) {
 			this.player.setVelocityX(-160);
@@ -115,7 +109,6 @@ export default class Level1 extends Scene {
 
 			this.player.anims.play('turn');
 		}
-
 		if (this.cursors.up.isDown && this.player.body.touching.down) {
 			this.player.setVelocityY(-500);
 		}
