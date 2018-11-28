@@ -6,7 +6,10 @@ export default class Level1 extends Scene {
 		});
 	}
 	preload() {
-		this.load.image('sky', '/assets/img/skypixel.jpg');
+		this.load.image('tiles', '/assets/img/arcade_platformerV2.png');
+		this.load.tilemapTiledJSON('map', '/assets/img/tilegame.json');
+		/////////////////////
+		// this.load.image('sky', '/assets/img/skypixel.jpg');
 		this.load.image('ground', '/assets/img/platform.png');
 		this.load.image('star', '/assets/img/star.png');
 		this.load.image('bomb', '/assets/img/bomb.png');
@@ -17,6 +20,18 @@ export default class Level1 extends Scene {
 		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
 	}
 	create() {
+		const map = this.make.tilemap({
+			key: 'map',
+			tileWidth: 16,
+			tileHeight: 16
+		});
+		// const tileset = map.addTilesetImage('maptiles', 'tiles');
+
+		// const backgroundLayer = map.createStaticLayer('background', tileset, 0, 0);
+		// const worldLayer = map.createStaticLayer('platforms', tileset, 0, 0);
+
+		//////////
+
 		this.add.image(0, 0, 'sky');
 		this.platforms = this.physics.add.staticGroup();
 		this.platforms
@@ -94,7 +109,7 @@ export default class Level1 extends Scene {
 		}
 	}
 	update(time, delta) {
-		console.log(time);
+		// console.log(time);
 		this.cursors = this.input.keyboard.createCursorKeys();
 		if (this.cursors.left.isDown) {
 			this.player.setVelocityX(-160);
