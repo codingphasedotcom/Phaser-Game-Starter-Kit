@@ -16,6 +16,7 @@ export default class Level1 extends Scene {
 		});
 	}
 	create() {
+		console.log(this.game);
 		this.add.image(400, 300, 'sky');
 		this.platforms = this.physics.add.staticGroup();
 		this.platforms
