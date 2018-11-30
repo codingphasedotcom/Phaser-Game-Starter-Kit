@@ -10,7 +10,7 @@ export default class Player {
 		this.scene = scene;
 
 		this.sprite = scene.physics.add
-			.sprite(x, y, 'dude')
+			.sprite(x, y, 'jacen')
 			.setDrag(1000, 0)
 			.setMaxVelocity(300, 400);
 		this.sprite.setBounce(0.1);
@@ -20,7 +20,7 @@ export default class Player {
 		const anims = scene.anims;
 		anims.create({
 			key: 'left',
-			frames: anims.generateFrameNumbers('dude', {
+			frames: anims.generateFrameNumbers('jacen', {
 				start: 0,
 				end: 3
 			}),
@@ -30,15 +30,15 @@ export default class Player {
 
 		anims.create({
 			key: 'turn',
-			frames: [{ key: 'dude', frame: 4 }],
+			frames: [{ key: 'jacen', frame: 4 }],
 			frameRate: 20
 		});
 
 		anims.create({
 			key: 'right',
-			frames: anims.generateFrameNumbers('dude', {
-				start: 5,
-				end: 8
+			frames: anims.generateFrameNumbers('jacen', {
+				start: 0,
+				end: 3
 			}),
 			frameRate: 10,
 			repeat: -1
@@ -49,11 +49,12 @@ export default class Player {
 		this.cursors = this.scene.input.keyboard.createCursorKeys();
 		if (this.cursors.left.isDown) {
 			this.sprite.setVelocityX(-160);
-
+			this.sprite.setOrigin(0.5, 0.5);
+			this.sprite.flipX = true;
 			this.sprite.anims.play('left', true);
 		} else if (this.cursors.right.isDown) {
 			this.sprite.setVelocityX(160);
-
+			this.sprite.flipX = false;
 			this.sprite.anims.play('right', true);
 		} else {
 			this.sprite.setVelocityX(0);

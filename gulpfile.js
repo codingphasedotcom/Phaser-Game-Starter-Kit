@@ -33,7 +33,7 @@ gulp.task('default', ['webpack', 'browser-sync'], () => {
 // 		.pipe(browserSync.stream());
 // });
 
-gulp.task('browser-sync', ['webpack'], function() {
+gulp.task('browser-sync', function() {
 	// THIS IS FOR SITUATIONS WHEN YOU HAVE ANOTHER SERVER RUNNING
 	// browserSync.init({
 	//   proxy: {

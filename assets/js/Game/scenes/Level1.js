@@ -14,9 +14,9 @@ export default class Level1 extends Scene {
 		this.load.image('ground', '/assets/img/platform.png');
 		this.load.image('star', '/assets/img/star.png');
 		this.load.image('bomb', '/assets/img/bomb.png');
-		this.load.spritesheet('dude', '/assets/img/dude.png', {
+		this.load.spritesheet('jacen', '/assets/img/jacen.png', {
 			frameWidth: 32,
-			frameHeight: 48
+			frameHeight: 32
 		});
 		// audio
 		this.load.audio('coin_sound', ['assets/audio/sfx_sounds_pause4_in.wav']);
