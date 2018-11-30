@@ -8,53 +8,52 @@ export default class Player {
 		this.sprite.setBounce(0.1);
 		this.sprite.setCollideWorldBounds(true);
 		this.sprite.body.setGravityY(300);
-		this.sprite.setSize(16, 16, true).setOffset(8, 15)
+		this.sprite.setSize(16, 16, true).setOffset(8, 15);
 
 		const anims = scene.anims;
-		anims.create({
-			key: 'left',
-			frames: anims.generateFrameNumbers('jacen', {
-				start: 0,
-				end: 4
-			}),
-			frameRate: 10,
-			repeat: -1
-		});
 
+		var test = [
+			{ key: 'char_sprites', frame: 'jacen2.png' },
+			{ key: 'char_sprites', frame: 'jacen3.png' },
+			{ key: 'char_sprites', frame: 'jacen4.png' },
+			{ key: 'char_sprites', frame: 'jacen5.png' }
+		];
 		anims.create({
 			key: 'turn',
-			frames: [{ key: 'jacen', frame: 0 }],
-			frameRate: 10
+			frames: [{ key: 'char_sprites', frame: 'jacen1.png' }],
+			frameRate: 10,
+			repeat: -1
 		});
-
 		anims.create({
 			key: 'right',
-			frames: anims.generateFrameNumbers('jacen', {
-				start: 0,
-				end: 4
-			}),
+			frames: test,
 			frameRate: 10,
 			repeat: -1
 		});
-
-		var frameNames = anims.generateFrameNames('dying')
-										 console.log(frameNames)
+		anims.create({
+			key: 'left',
+			frames: test,
+			frameRate: 10,
+			repeat: -1
+		});
 		anims.create({
 			key: 'jump',
-			frames: anims.generateFrameNumbers('jacen', {
-				start: 5,
-				end: 6
-			}),
+			frames: [{ key: 'char_sprites', frame: 'jacen_jump.png' }],
 			frameRate: 10,
 			repeat: -1
 		});
+		this.userJumps = 0;
+
+		var spacebar = this.input.keyboard.addKey(
+			Phaser.Input.Keyboard.KeyCodes.SPACE
+		);
 	}
 
 	update(time, delta) {
 		this.cursors = this.scene.input.keyboard.createCursorKeys();
 		if (this.cursors.left.isDown) {
 			this.sprite.setVelocityX(-160);
-			this.sprite.setOrigin(0.5, 0.5);
+			// this.sprite.setOrigin(0.5, 0.5);
 			this.sprite.flipX = true;
 			this.sprite.anims.play('left', true);
 		} else if (this.cursors.right.isDown) {
@@ -67,10 +66,22 @@ export default class Player {
 			this.sprite.anims.play('turn');
 		}
 		if (this.cursors.up.isDown && this.sprite.body.blocked.down) {
-			this.sprite.setVelocityY(-500);
+			if (this.userJumps < 3) {
+				this.userJumps += 1;
+				this.sprite.setVelocityY(-500);
+				this.sprite.anims.play('jump');
+				console.log(`Jumps: ${this.userJumps}`);
+			}
+		}
+		//double jump
+
+		if (!this.sprite.body.blocked.down) {
 			this.sprite.anims.play('jump');
 		}
-		if(!this.sprite.body.blocked.down){
+
+		if (this.sprite.body.blocked.down) {
+			this.userJumps = 0;
+			console.log(`Jumps: ${this.userJumps}`);
 			this.sprite.anims.play('jump');
 		}
 	}

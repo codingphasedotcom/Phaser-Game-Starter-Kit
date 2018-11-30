@@ -7,8 +7,24 @@ export default class Level1 extends Phaser.Scene {
 		});
 	}
 	preload() {
+		var progress = this.add.graphics();
+
+		this.load.on('progress', function(value) {
+			progress.clear();
+			progress.fillStyle(0x42f456, 1);
+			progress.fillRect(0, 270, 800 * value, 60);
+		});
+
+		this.load.on('complete', function() {
+			progress.destroy();
+		});
 		// load tiles
-		this.load.multiatlas('sprites', '/assets/img/sprites/sprites.json', 'assets');
+		this.load.atlas({
+			key: 'char_sprites',
+			textureURL: '/assets/img/sprites/sprites.png',
+			atlasURL: '/assets/img/sprites/sprites.json'
+		});
+
 		this.load.image('tiles', '/assets/img/arcade_platformerV2-transparent.png');
 		this.load.tilemapTiledJSON('map', '/assets/img/platformTiled.json');
 		// images
@@ -25,8 +41,6 @@ export default class Level1 extends Phaser.Scene {
 	}
 	create() {
 		//make tilemap
-		var frameNames = this.anims.generateFrameNames('dying')
-										 console.log(frameNames)
 		const map = this.make.tilemap({
 			key: 'map',
 			tileWidth: 16,

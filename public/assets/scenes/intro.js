@@ -21,11 +21,6 @@ export default class Intro extends Phaser.Scene {
 
 		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
 
-		let loadingBar = this.add.graphics({
-			fillStyle: {
-				color: 0x000000
-			}
-		});
 		for (let i = 0; i < 100; i++) {
 			this.load.image('star', '/assets/img/star.png');
 		}
