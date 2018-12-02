@@ -26,15 +26,28 @@ export default class Intro extends Phaser.Scene {
 		}
 
 		var progress = this.add.graphics();
-
+		const self = this;
 		this.load.on('progress', function(value) {
+			console.log(self.world);
+			self.text = self.make.text({
+				x: 100,
+				y: 100,
+				text: `Loading ${Math.floor(100 * value)}%`,
+				style: {
+					font: '64px Arial',
+					fill: '#ffffff',
+					align: 'center',
+					backgroundColor: '#000000'
+				}
+			});
 			progress.clear();
 			progress.fillStyle(0x42f456, 1);
-			progress.fillRect(0, 270, 800 * value, 60);
+			progress.fillRect(0, 300, 800 * value, 20);
 		});
 
 		this.load.on('complete', function() {
 			progress.destroy();
+			// this.text.destroy();
 		});
 	}
 	create() {

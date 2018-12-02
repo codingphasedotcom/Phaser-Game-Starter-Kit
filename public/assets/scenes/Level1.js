@@ -8,11 +8,23 @@ export default class Level1 extends Phaser.Scene {
 	}
 	preload() {
 		var progress = this.add.graphics();
-
+		const self = this;
 		this.load.on('progress', function(value) {
+			console.log(self.world);
+			var text = self.make.text({
+				x: 100,
+				y: 100,
+				text: `Loading ${Math.floor(100 * value)}%`,
+				style: {
+					font: '64px Arial',
+					fill: '#ffffff',
+					align: 'center',
+					backgroundColor: '#000000'
+				}
+			});
 			progress.clear();
 			progress.fillStyle(0x42f456, 1);
-			progress.fillRect(0, 270, 800 * value, 60);
+			progress.fillRect(0, 300, 800 * value, 20);
 		});
 
 		this.load.on('complete', function() {
@@ -51,7 +63,9 @@ export default class Level1 extends Phaser.Scene {
 		const backgroundLayer = map.createStaticLayer('background', tileset, 0, 0);
 		const treesLayer = map.createDynamicLayer('trees', tileset, 0, 0);
 		const worldLayer = map.createDynamicLayer('Terrain', tileset, 0, 0);
-		worldLayer.setCollisionByProperty({ collides: true });
+		worldLayer.setCollisionByProperty({
+			collides: true
+		});
 		//set camera bound to level
 		this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 		this.cameras.main.setZoom(2);
@@ -67,9 +81,16 @@ export default class Level1 extends Phaser.Scene {
 		this.physics.world.bounds.height = backgroundLayer.height;
 
 		var bgmusic1 = this.sound.add('bgmusic1');
-		// bgmusic1.play();
+		bgmusic1.play();
 		//////////
-		this.player = new Player(this, 200, 0);
+		const spawns = map.objects.find(obj => obj.name == 'spawns');
+
+		this.start_spawn = spawns.objects.find(obj => obj.name == 'start_spawn');
+		this.end_spawn = spawns.objects.find(obj => obj.name == 'end_spawn');
+		// console.log(start_spawn);
+		// let end_spawn = map.objects.find(obj => obj.name == 'end_spawn').objects[0];
+
+		this.player = new Player(this, this.start_spawn.x, this.start_spawn.y);
 		this.physics.add.collider(this.player.sprite, worldLayer);
 		this.cameras.main.startFollow(this.player.sprite);
 
@@ -77,7 +98,11 @@ export default class Level1 extends Phaser.Scene {
 		this.stars = this.physics.add.group({
 			key: 'star',
 			repeat: 20,
-			setXY: { x: 20, y: 0, stepX: 100 }
+			setXY: {
+				x: 20,
+				y: 0,
+				stepX: 100
+			}
 		});
 
 		this.stars.children.iterate(function(child) {
@@ -93,6 +118,7 @@ export default class Level1 extends Phaser.Scene {
 			this
 		);
 		this.score = 0;
+
 		function collectStar(player, star) {
 			var coin_sound = this.sound.add('coin_sound');
 			coin_sound.play();
@@ -100,6 +126,41 @@ export default class Level1 extends Phaser.Scene {
 			console.log(this.score);
 			star.disableBody(true, true);
 		}
+
+		function fallDeath() {
+			console.log('died');
+			this.scene.restart();
+		}
+		// Falls == Death
+		this.bottomRectangle = this.add
+			.zone(100, this.physics.world.bounds.height - 10)
+			.setSize(this.physics.world.bounds.width, 100);
+		this.physics.world.enable(this.bottomRectangle);
+		this.bottomRectangle.body.setAllowGravity(false);
+		this.bottomRectangle.body.moves = false;
+
+		this.physics.add.overlap(
+			this.player.sprite,
+			this.bottomRectangle,
+			fallDeath,
+			null,
+			this
+		);
+		// Complete level
+		this.complete_level = this.add
+			.zone(this.end_spawn.x, this.end_spawn.y)
+			.setSize(100, 100);
+		this.physics.world.enable(this.complete_level);
+		this.complete_level.body.setAllowGravity(false);
+		this.complete_level.body.moves = false;
+
+		this.physics.add.overlap(
+			this.player.sprite,
+			this.complete_level,
+			fallDeath,
+			null,
+			this
+		);
 	}
 	update(time, delta) {
 		this.player.update();

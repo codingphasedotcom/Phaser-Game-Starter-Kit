@@ -44,12 +44,15 @@ export default class Player {
 		});
 		this.userJumps = 0;
 
-		var spacebar = this.input.keyboard.addKey(
-			Phaser.Input.Keyboard.KeyCodes.SPACE
-		);
+		// this.spacebar = scene.input.keyboard.addKey(
+		// 	scene.input.Keyboard.KeyCodes.SPACE
+		// );
+		this.spacebar = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+		console.log()
 	}
 
 	update(time, delta) {
+		let scene = this
 		this.cursors = this.scene.input.keyboard.createCursorKeys();
 		if (this.cursors.left.isDown) {
 			this.sprite.setVelocityX(-160);
@@ -65,15 +68,23 @@ export default class Player {
 
 			this.sprite.anims.play('turn');
 		}
-		if (this.cursors.up.isDown && this.sprite.body.blocked.down) {
-			if (this.userJumps < 3) {
-				this.userJumps += 1;
-				this.sprite.setVelocityY(-500);
-				this.sprite.anims.play('jump');
-				console.log(`Jumps: ${this.userJumps}`);
-			}
+		// jump if on the ground
+		// if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.sprite.body.blocked.down) {
+		// 	if (this.userJumps < 3) {
+		// 		this.userJumps += 1;
+		// 		this.sprite.setVelocityY(-500);
+		// 		this.sprite.anims.play('jump');
+		// 		console.log(`Jumps: ${this.userJumps}`);
+		// 	}
+		// }
+		// jump if on the ground
+		if ((Phaser.Input.Keyboard.JustDown(this.spacebar) && this.userJumps < 1) ) {
+
+			this.userJumps += 1;
+			this.sprite.setVelocityY(-300);
+			console.log('pressing again')
+			console.log(`Jumps: ${this.userJumps}`);
 		}
-		//double jump
 
 		if (!this.sprite.body.blocked.down) {
 			this.sprite.anims.play('jump');
@@ -82,7 +93,7 @@ export default class Player {
 		if (this.sprite.body.blocked.down) {
 			this.userJumps = 0;
 			console.log(`Jumps: ${this.userJumps}`);
-			this.sprite.anims.play('jump');
+			// this.sprite.anims.play('jump');
 		}
 	}
 
