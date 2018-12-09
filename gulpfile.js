@@ -3,9 +3,9 @@ const browserSync = require('browser-sync');
 const reload = browserSync.reload;
 var exec = require('child_process').exec;
 
-gulp.task('default', ['webpack', 'browser-sync'], () => {
+gulp.task('default', ['browser-sync'], () => {
 	// gulp.watch('./assets/scss/**/*', ['webpack']);
-	gulp.watch('./assets/**/*', ['webpack']);
+	// gulp.watch('./assets/**/*', ['webpack']);
 	gulp
 		.watch([
 			'./public/**/*',
