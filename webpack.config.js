@@ -16,9 +16,7 @@ compress.unused = true;
 module.exports = env => {
 	return {
 		entry: {
-			styles: './assets/js/styles.js',
-			game: './assets/js/Game/index.js',
-			main: './assets/js/main.js'
+			game: './assets/js/Game/index.js'
 		},
 		output: {
 			path: path.resolve(__dirname, 'public/dist'),
@@ -58,10 +56,6 @@ module.exports = env => {
 			new WebpackMd5Hash()
 		],
 		optimization: {
-			splitChunks: {
-				chunks: 'all',
-				minSize: 0
-			},
 			minimize: true,
 			minimizer: [
 				new UglifyJsPlugin({
