@@ -80,8 +80,8 @@ export default class Level1 extends Phaser.Scene {
 		this.physics.world.bounds.width = backgroundLayer.width;
 		this.physics.world.bounds.height = backgroundLayer.height;
 
-		var bgmusic1 = this.sound.add('bgmusic1');
-		bgmusic1.play();
+		this.bgmusic1 = this.sound.add('bgmusic1');
+		this.bgmusic1.play();
 		//////////
 		const spawns = map.objects.find(obj => obj.name == 'spawns');
 
@@ -129,7 +129,8 @@ export default class Level1 extends Phaser.Scene {
 
 		function fallDeath() {
 			console.log('died');
-			this.scene.restart();
+			this.bgmusic1.stop();
+			this.scene.start('Level1');
 		}
 		// Falls == Death
 		this.bottomRectangle = this.add
