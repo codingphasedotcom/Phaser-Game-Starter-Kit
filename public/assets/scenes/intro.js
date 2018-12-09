@@ -1,4 +1,3 @@
-// import { Scene } from 'phaser';
 export default class Intro extends Phaser.Scene {
 	constructor() {
 		super({
@@ -6,24 +5,10 @@ export default class Intro extends Phaser.Scene {
 		});
 	}
 	preload() {
-		this.load.image('sky', '/assets/img/skypixel.jpg');
-		this.load.image('ground', '/assets/img/platform.png');
-		this.load.image('star', '/assets/img/star.png');
-		this.load.image('bomb', '/assets/img/bomb.png');
-		this.load.spritesheet('dude', '/assets/img/dude.png', {
-			frameWidth: 32,
-			frameHeight: 48
-		});
 		this.load.script(
 			'webfont',
 			'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js'
 		);
-
-		this.load.audio('coin_sound', ['assets/audio/sfx_coin_double4.wav']);
-
-		for (let i = 0; i < 100; i++) {
-			this.load.image('star', '/assets/img/star.png');
-		}
 
 		var progress = this.add.graphics();
 		const self = this;
@@ -35,7 +20,6 @@ export default class Intro extends Phaser.Scene {
 
 		this.load.on('complete', function() {
 			progress.destroy();
-			// this.text.destroy();
 		});
 	}
 	create() {
@@ -66,7 +50,7 @@ export default class Intro extends Phaser.Scene {
 			},
 			active: function() {
 				add
-					.text(150, 100, `Jacen's Journey`, {
+					.text(75, 100, `Phaser 3 Starter Kit`, {
 						fontFamily: 'Fredericka the Great',
 						fontSize: 50,
 						color: '#ffffff'
