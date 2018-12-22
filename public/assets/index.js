@@ -1,5 +1,5 @@
 // import { Game } from './phaser.min.js';
-import Intro from './scenes/Intro.js';
+import Intro from './scenes/intro.js';
 import Level1 from './scenes/Level1.js';
 
 var config = {
